@@ -1,5 +1,6 @@
 package com.androiddev.mobile_ws.ui.controller;
 
+import com.androiddev.mobile_ws.exception.UserServiceException;
 import com.androiddev.mobile_ws.model.request.UpdateUserDetailsRequestModel;
 import com.androiddev.mobile_ws.model.request.UserDetailsRequestModel;
 import com.androiddev.mobile_ws.model.response.UserRest;
@@ -37,7 +38,7 @@ public class UserController {
         if (users.containsKey(userId)) {
             return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new UserServiceException("No data found in database.");
         }
     }
 
