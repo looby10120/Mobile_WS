@@ -4,6 +4,8 @@ import com.androiddev.mobile_ws.exception.UserServiceException;
 import com.androiddev.mobile_ws.model.request.UpdateUserDetailsRequestModel;
 import com.androiddev.mobile_ws.model.request.UserDetailsRequestModel;
 import com.androiddev.mobile_ws.model.response.UserRest;
+import com.androiddev.mobile_ws.userservice.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +13,15 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     HashMap<String, UserRest> users;
+
+    @Autowired
+    UserService userService;
 
     // require = false (optional param) can't use with primitive data type such int
     @GetMapping()
@@ -51,20 +55,9 @@ public class UserController {
     })
     public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetail) {
 
-        UserRest result = new UserRest();
+        UserRest returnValue = userService.createUser(userDetail);
 
-        result.setFirstName(userDetail.getFirstName());
-        result.setLastName(userDetail.getLastName());
-        result.setEmail(userDetail.getEmail());
-        result.setUserId(userDetail.getPassword());
-
-        String userId = UUID.randomUUID().toString();
-        result.setUserId(userId);
-
-        if (users == null) users = new HashMap<>();
-        users.put(userId, result);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(returnValue, HttpStatus.OK);
     }
 
     @PutMapping(path = "/{userId}", consumes = {
